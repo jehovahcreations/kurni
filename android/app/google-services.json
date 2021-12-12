@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:675868454578:android:01c3dcc33c6b2821d863ab",
+        "mobilesdk_app_id": "1:675868454578:android:a5eea44c85e1bb26d863ab",
         "android_client_info": {
-          "package_name": "com.example.pura"
+          "package_name": "com.sjm.app.pura"
         }
       },
       "oauth_client": [

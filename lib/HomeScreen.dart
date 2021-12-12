@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:pura/DashBoard.dart';
 import 'package:pura/dash.dart';
+import 'package:pura/idcard.dart';
+import 'package:pura/learn.dart';
 import 'package:pura/mainmenu.dart';
+import 'package:pura/profile.dart';
+import 'package:pura/team.dart';
 import 'package:pura/view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Details.dart';
+import 'offer.dart';
 import 'src/curved_navigation_bar.dart';
 //import 'package:pura/bottom.dart';
 import 'package:pura/constant.dart';
@@ -23,7 +28,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 var _opening = '0';
-int _index =0;
+int _index = 0;
 @override
   void initState(){
     super.initState();
@@ -40,7 +45,7 @@ int _index =0;
   @override
   Widget build(BuildContext context) {
      return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(backgroundColor:Colors.teal,leading:InkWell(
             onTap:(){widget.controller.toggle();
             //print(widget.title.stateNotifier);
@@ -81,7 +86,15 @@ int _index =0;
         
         child: Column(
           children: [
-_index ==0?Dash():_index ==1?MainMenu():_index==6?Details(title: 'Banking Jobs',param:widget.param):_index==7?View(param:widget.param):Text('77')
+_index ==0?Dash():
+_index ==1?MainMenu():
+_index ==2?Learn():
+_index ==3?Team():
+_index ==4?Profile():
+_index==6?Details(title: 'Banking Jobs',param:widget.param):
+_index==7?View(param:widget.param):
+_index==10?Idcard():
+_index==11?Offer():Text('77')
             
         
           ],

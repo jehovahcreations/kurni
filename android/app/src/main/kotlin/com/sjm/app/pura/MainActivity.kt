@@ -1,4 +1,4 @@
-package com.example.pura
+package com.sjm.app.pura
 
 import io.flutter.embedding.android.FlutterActivity
 

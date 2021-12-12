@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 2.0.7+7
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -67,7 +67,23 @@ dependencies:
   metro_appbar: ^0.2.0
   youtube_plyr_iframe: ^2.0.7
   status_change: ^2.0.0
-  
+  pdf: ^3.6.1
+  path_provider: ^2.0.0
+  pdfdownload: ^0.0.2
+  change_app_package_name: ^1.0.0
+  flutter_app_name: ^0.1.1
+  flutter_launcher_icons: "^0.9.2"
+  card_swiper: ^1.0.4
+  swipe_image_gallery: ^0.0.4
+  percent_indicator: ^3.4.0
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo/logo.png"
+
+flutter_app_name:
+  name: "PURA"
   
   
 

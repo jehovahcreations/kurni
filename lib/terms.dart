@@ -30,6 +30,8 @@ class _TermsState extends State<Terms> {
       data = res;
     });
     print(data);
+    await db.close();
+
   }
   
   @override
@@ -115,10 +117,7 @@ class _TermsState extends State<Terms> {
                                   
                                   Padding(
                                     padding: const EdgeInsets.all(20.0),
-                                    child: Expanded(
-                            // fit: BoxFit.fitWidth, 
-                             child: Text(data[Index]['text'],style: TextStyle(color: Colors.grey,fontSize: 16,fontStyle: FontStyle.italic),),
-                           ),
+                                    child: Text(data[Index]['text'],style: TextStyle(color: Colors.grey,fontSize: 16,fontStyle: FontStyle.italic),),
                                   ),  
                                    ],
                            ),

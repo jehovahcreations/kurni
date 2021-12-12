@@ -61,12 +61,14 @@ final GlobalKey<SfSignaturePadState> _signaturePadKey = GlobalKey();
   }
   _submit()async{
      final perfs = await SharedPreferences.getInstance();
-    var plainPassword = _password;
-    var hashedPassword = new DBCrypt().hashpw(plainPassword!, new DBCrypt().gensalt());
+   // var plainPassword = _password;
+  //  var hashedPassword = new DBCrypt().hashpw(plainPassword!, new DBCrypt().gensalt());
     await db.open();
     var coll = db.collection('users');
-    var res = await coll.insertOne({'role':'Emp','phone':perfs.getString('phone'),'parent':_referal,'name':_name,'password':hashedPassword,'email':_email,'address':_address,'bank':_bank,'account':_account,'ifsc':_ifsc,'addType':_addressid,'idType':_idid,'adressproof':_adressproof,'idproof':_idproof,'photo':_photo,'signature':_signature,'isActive':1,'balance':0,'pending':0,'paid':0,'points':0,'Date':DateTime.now()});
+    var res = await coll.insertOne({'role':'Emp','phone':perfs.getString('phone'),'parent':_referal,'name':_name,'email':_email,'address':_address,'bank':_bank,'account':_account,'ifsc':_ifsc,'addType':_addressid,'idType':_idid,'adressproof':_adressproof,'idproof':_idproof,'photo':_photo,'signature':_signature,'isActive':1,'balance':0,'pending':0,'paid':0,'points':0,'Date':DateTime.now().toUtc(),'target':300});
     Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Login()));
+    await db.close();
+
 }
 
   

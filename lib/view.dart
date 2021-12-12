@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:metro_appbar/metro_appbar.dart';
 import 'package:flutter_share/flutter_share.dart';
@@ -14,6 +16,7 @@ class View extends StatefulWidget {
 }
 
 class _ViewState extends State<View> {
+  late Timer _timer;
 int _index = 0; 
 String? _status;
   List<dynamic> data = [];
@@ -28,10 +31,14 @@ String? _status;
   String? condition;
   String? terms;
   String? dataval;
+  String? videoo;
+  int? statusD;
+  bool _enabled = false;
   
   List<dynamic> video = [];
   List<dynamic> worki = [];
  TextEditingController _dataval = TextEditingController();
+ ScrollController _controller = new ScrollController();
   
 Future<void> share() async {
     await FlutterShare.share(
@@ -41,6 +48,26 @@ Future<void> share() async {
       chooserTitle: 'PURA'
     );
   }
+  _statusD()async{
+    setState(() {
+      isLoading = true;
+    });
+    print(clickid);
+    await db.open();
+var coll = db.collection('banks');
+var res = await coll.findOne({"_id":clickid});
+if(res==null){
+  _status ='Something went Wrong';
+}else{
+  setState(() {
+    statusD = res['status'];
+    isLoading = false;
+  });
+  print(statusD);
+}
+await db.close();
+
+}
  _nextpage()async{
    print(clickid);
    await db.open();
@@ -59,6 +86,8 @@ Future<void> share() async {
   });
   _menuFetch();
    }
+   await db.close();
+
    }
  
 
@@ -69,7 +98,7 @@ Future<void> share() async {
   
   _menuFetch()async{
    await db.open();
-   var coll = db.collection('subMenus');
+   var coll = db.collection('submenus');
    var res =await coll.findOne({'menuID':widget.param,'isActive':1});
    if(res == null){
     _status = 'No data';
@@ -93,6 +122,7 @@ Future<void> share() async {
        description = res1['Description'];
        specifications = res1['Specifications'];
        target_Audience = res1['Target_Audience'];
+       videoo = res1['video'];
        //isLoading = false;
      });
     
@@ -113,7 +143,7 @@ Future<void> share() async {
    // print(specifications);
    }
 
-    var coll3 = db.collection('share');
+    var coll3 = db.collection('shares');
    var res3 =await coll3.find({'menuID':widget.param,'isActive':1}).toList();
    if(res3 == null){
     _status = 'No data';
@@ -134,15 +164,24 @@ Future<void> share() async {
        worki = res4;
       isLoading = false;
      });
-    
+    await db.close();
+
    // print(specifications);
    }
   }
+  _blablaState() {
+    _timer = new Timer(const Duration(seconds: 3), () {
+      setState(() => _enabled = true);
+      });
+    }
+  
   @override
   void initState() {
     super.initState();
     // _getFirebaseUser();
     _menuFetch();
+    
+
     }
   @override
   Widget build(BuildContext context) {
@@ -394,6 +433,38 @@ Future<void> share() async {
              mainAxisSize: MainAxisSize.max,
              
              children: [
+
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                 //height: MediaQuery.of(context).size.height,
+
+                 decoration: BoxDecoration(
+                 color: Colors.grey[200],
+                 borderRadius: BorderRadius.circular(10),
+                 boxShadow: [BoxShadow(
+                   color: Colors.grey,
+                   spreadRadius: 4,
+                   blurRadius: 3
+                 )]
+                 ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: YoutubePlayerIFrame(
+                       controller: YoutubePlayerController(
+                       initialVideoId:videoo.toString(),
+                       params: YoutubePlayerParams(
+                    playlist: [], // Defining custom playlist
+                    startAt: Duration(seconds: 30),
+                    showControls: false,
+                    showFullscreenButton: false,
+                       ),
+                       ),
+                       aspectRatio: 16 / 9,
+            ),
+                  ),
+                ),
+
+                SizedBox(height: 20,),
                
                
                Container(
@@ -523,104 +594,113 @@ Future<void> share() async {
    ),
  )
  :_index ==3?
- SingleChildScrollView(
-   child: Container(
-     child: ListView.builder(
-       shrinkWrap: true,
-       itemCount: worki.length,
-       itemBuilder: (BuildContext ctxt, int Index){
-         return Padding(
-           padding: const EdgeInsets.all(8.0),
-           child: InkWell(
-             onTap: (){
-             if(worki[Index]['status'] !=1){
-               setState(() {
-                 _index = 6;
-                clickid = worki[Index]['_id'];
-               });
-             }else{
-               _index = 5;
-               clickid = worki[Index]['_id'];
-             }
-             },
-             child: Container(
-               child: Card(
-                 child: ListTile(
-                 title:Column(
+ ListView.builder(
+   physics: _enabled ? ClampingScrollPhysics() : NeverScrollableScrollPhysics(),
+   controller: _controller,
+   shrinkWrap: true,
+   itemCount: worki.length,
+   itemBuilder: (BuildContext ctxt, int Index){
+     return Padding(
+       padding: const EdgeInsets.all(8.0),
+       child: InkWell(
+         onTap: (){
+         if(worki[Index]['status'] !=1){
+           setState(() {
+             _index = 6;
+            clickid = worki[Index]['_id'];
+            _statusD();
+           });
+         }else{
+         if(worki[Index]['status'] ==1){
+          // print(worki[Index]['status']);
+          setState(() {
+             _index = 9;
+           clickid = worki[Index]['_id'];
+          });
+          
+           //Navigator.of(context).push(MaterialPageRoute(builder: (context)=>View(param:widget.param)));
+           
+         }
+         }
+         },
+         child: Container(
+           child: Card(
+             child: ListTile(
+             title:Column(
+               children: [
+                 Row(
                    children: [
-                     Row(
-                       children: [
-                         Icon(Icons.account_circle_outlined,color: Colors.teal, size: 16,),
-                         Expanded(
-                           child: Padding(
-                             padding: const EdgeInsets.only(left:8.0),
-                             child: Text(worki[Index]['name'],
-                             overflow: TextOverflow.fade,
-                             maxLines: 1,
-                             softWrap: false,
-                             style: TextStyle(fontSize: 14),),
-                           ),
-                         ),
-                       ],
+                     Icon(Icons.account_circle_outlined,color: Colors.teal, size: 16,),
+                     Expanded(
+                       child: Padding(
+                         padding: const EdgeInsets.only(left:8.0),
+                         child: Text(worki[Index]['name'],
+                         overflow: TextOverflow.fade,
+                         maxLines: 1,
+                         softWrap: false,
+                         style: TextStyle(fontSize: 14),),
+                       ),
                      ),
-                     Row(
-                       children: [
-                         Icon(Icons.phone,color: Colors.teal, size: 16,),
-                         Expanded(
-                           child: Padding(
-                             padding: const EdgeInsets.only(left:8.0),
-                             child: Text(worki[Index]['phone'],
-                             overflow: TextOverflow.fade,
-                             maxLines: 1,
-                             softWrap: false,
-                             style: TextStyle(fontSize: 14),),
-                           ),
-                         ),
-                       ],
-                     ),
-                     Row(
-                       children: [
-                         Icon(Icons.email,color: Colors.teal, size: 16,),
-                         Expanded(
-                           child: Padding(
-                             padding: const EdgeInsets.only(left:8.0),
-                             child: Text(worki[Index]['email'],
-                             overflow: TextOverflow.fade,
-                             maxLines: 1,
-                             softWrap: false,
-                             style: TextStyle(fontSize: 14),),
-                           ),
-                         ),
-                       ],
-                     ),
-                     
-                     
                    ],
                  ),
-                 leading:Padding(
-                   padding: const EdgeInsets.all(8.0),
-                   child: CircleAvatar(
-                                    radius: 25,
-                                    backgroundColor: Colors.teal,
-                                    child: CircleAvatar(
-                                    radius: 23,
-                                    
-                                    backgroundImage: Image.network(image!,fit: BoxFit.fill,).image,)),
+                 Row(
+                   children: [
+                     Icon(Icons.phone,color: Colors.teal, size: 16,),
+                     Expanded(
+                       child: Padding(
+                         padding: const EdgeInsets.only(left:8.0),
+                         child: Text(worki[Index]['phone'],
+                         overflow: TextOverflow.fade,
+                         maxLines: 1,
+                         softWrap: false,
+                         style: TextStyle(fontSize: 14),),
+                       ),
+                     ),
+                   ],
                  ),
-                 trailing: worki[Index]['status'] == 1?Icon(Icons.downloading,color: Colors.amber,size:30):
-                           worki[Index]['status'] == 2?Icon(Icons.done_all,color: Colors.green,size:30):
-                           Icon(Icons.cancel,color: Colors.red,size:30)
+                 Row(
+                   children: [
+                     Icon(Icons.email,color: Colors.teal, size: 16,),
+                     Expanded(
+                       child: Padding(
+                         padding: const EdgeInsets.only(left:8.0),
+                         child: Text(worki[Index]['email'],
+                         overflow: TextOverflow.fade,
+                         maxLines: 1,
+                         softWrap: false,
+                         style: TextStyle(fontSize: 14),),
+                       ),
+                     ),
+                   ],
+                 ),
                  
-                  
-               
-                 ),
-               ),
-             )));
-       }
-     )
-   ),
+                 
+               ],
+             ),
+             leading:Padding(
+               padding: const EdgeInsets.all(8.0),
+               child: CircleAvatar(
+                                radius: 25,
+                                backgroundColor: Colors.teal,
+                                child: CircleAvatar(
+                                radius: 23,
+                                
+                                backgroundImage: Image.network(image!,fit: BoxFit.fill,).image,)),
+             ),
+             trailing: worki[Index]['status'] == 1?Icon(Icons.downloading,color: Colors.amber,size:30):
+                       worki[Index]['status'] == 2?Icon(Icons.downloading,color: Colors.amber,size:30):
+                       worki[Index]['status'] == 3?Icon(Icons.done_all,color: Colors.green,size:30):
+                       worki[Index]['status'] == 4?Icon(Icons.done_all,color: Colors.green,size:30):
+                       Icon(Icons.cancel,color: Colors.red,size:30)
+             
+              
+           
+             ),
+           ),
+         )));
+   }
  ):
-       _index == 5?  
+       _index == 9?  
 
        Padding(
          padding: const EdgeInsets.all(20.0),
@@ -670,6 +750,7 @@ Future<void> share() async {
        ) 
          :
           _index == 6?  
+          
 
        Padding(
          padding: const EdgeInsets.all(20.0),
@@ -684,11 +765,41 @@ Future<void> share() async {
              )]
 
            ),
+           
            child: Padding(
              padding: const EdgeInsets.all(20.0),
              child: Container(
                child: Column(
                  children: [
+                   Padding(
+                     padding: const EdgeInsets.all(15.0),
+                     child: Row(
+                       mainAxisAlignment:MainAxisAlignment.spaceAround,
+                       children: [
+                         Text('Customer'),
+                         Container(
+                           width: 25,
+                           height:25,
+                           decoration: BoxDecoration(
+                             borderRadius: BorderRadius.circular(50),
+                             color:Colors.red,
+                           ),
+                           child:Container(
+                           width: 20,
+                           height:20,
+                           decoration: BoxDecoration(
+                             borderRadius: BorderRadius.circular(50),
+                             color:Colors.teal,
+                           ),
+                         )
+                         ),
+                         Text('Completed'),
+                       ],
+                     ),
+                     
+                   ),
+                   Container(height: 40, child: VerticalDivider(color: Colors.teal,thickness:3)),
+
                    Padding(
                      padding: const EdgeInsets.all(15.0),
                      child: Row(
@@ -711,11 +822,71 @@ Future<void> share() async {
                            ),
                          )
                          ),
-                         Text('Processing'),
+                         Text('Completed'),
                        ],
                      ),
-                     VerticalDiv
-                   )
+                     
+                   ),
+                   Container(height: 40, child: VerticalDivider(color: Colors.teal,thickness:3)),
+                   Padding(
+                     padding: const EdgeInsets.all(15.0),
+                     child: Row(
+                       mainAxisAlignment:MainAxisAlignment.spaceAround,
+                       children: [
+                         Text('Verification'),
+                         Container(
+                           width: 25,
+                           height:25,
+                           decoration: BoxDecoration(
+                             borderRadius: BorderRadius.circular(50),
+                             color:Colors.red,
+                           ),
+                           child:Container(
+                           width: 20,
+                           height:20,
+                           decoration: BoxDecoration(
+                             borderRadius: BorderRadius.circular(50),
+                             color:statusD == 3 ?Colors.teal:statusD == 4 ?Colors.teal:Colors.grey,
+                           ),
+                         )
+                         ),
+                         statusD == 3 ?Text('Completed'):statusD == 4 ?Text('Completed'):Text('Processing'),
+                       ],
+                     ),
+                     
+                   ),
+                   Container(height: 40, child: VerticalDivider(color: Colors.teal,thickness:3)),
+                   Padding(
+                     padding: const EdgeInsets.all(15.0),
+                     child: Row(
+                       mainAxisAlignment:MainAxisAlignment.spaceAround,
+                       children: [
+                         Text('Approval'),
+                         Container(
+                           width: 25,
+                           height:25,
+                           decoration: BoxDecoration(
+                             borderRadius: BorderRadius.circular(50),
+                             color:Colors.red,
+                           ),
+                           child:Container(
+                           width: 20,
+                           height:20,
+                           decoration: BoxDecoration(
+                             borderRadius: BorderRadius.circular(50),
+                             color:statusD == 4 ?Colors.teal:Colors.grey,
+                           ),
+                         )
+                         ),
+                         statusD == 4 ?Text('Completed'):statusD == 5 ?Text('Rejected'):Text('Processing'),
+                       ],
+                     ),
+                     
+                   ),
+                  // Container(height: 40, child: VerticalDivider(color: Colors.teal,thickness:3)),
+               
+               
+               
                  ],
                ),
              )

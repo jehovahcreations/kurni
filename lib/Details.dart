@@ -20,8 +20,8 @@ class _DetailsState extends State<Details> {
   
   _menuFetch()async{
    await db.open();
-   var coll = db.collection('subMenus');
-   var res =await coll.find({'mainmenu':widget.param}).toList();
+   var coll = db.collection('submenus');
+   var res =await coll.find({'mainmenu':widget.param,"isActive":1}).toList();
    if(res == null){
     _status = 'No data';
    }else{
@@ -32,6 +32,8 @@ class _DetailsState extends State<Details> {
     
     print(res);
    }
+   await db.close();
+
   }
   @override
   void initState() {

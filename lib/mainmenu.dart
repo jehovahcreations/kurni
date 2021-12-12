@@ -20,7 +20,7 @@ class _MainMenuState extends State<MainMenu> {
   _menuFetch()async{
    await db.open();
    var coll = db.collection('menus');
-   var res =await coll.find().toList();
+   var res =await coll.find({"isActive":1}).toList();
    if(res == null){
     _status = 'No data';
    }else{
@@ -31,6 +31,8 @@ class _MainMenuState extends State<MainMenu> {
     
     print(res);
    }
+   await db.close();
+
   }
   @override
   void initState() {
@@ -92,7 +94,7 @@ class _MainMenuState extends State<MainMenu> {
                                    children: [
                                      Padding(
                                        padding: const EdgeInsets.only(top: 25,bottom: 10),
-                                       child: Icon(IconData(int.parse(data[Index]['image']),fontFamily: 'MaterialIcons'),color: Colors.white,size: 50,),
+                                       child: Icon(IconData(data[Index]['image'],fontFamily: 'MaterialIcons'),color: Colors.white,size: 50,),
                                        
                                      ),
                                      Flexible(

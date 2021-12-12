@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'DashBoard.dart';
 import 'constant.dart';
 
 class Menu extends StatefulWidget {
@@ -15,34 +16,8 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> {
   String? _image;
   String? _name;
-  bool isLoading = true;
-  _profile()async{
-
-    var prefs = await SharedPreferences.getInstance();
-    await db.open();
-    var coll = db.collection('users');
-    var res = await coll.findOne({'phone':prefs.getString('phone')});
-    print(res);
-   // final result = res!['phone'];
-     
-    if(res  == null){
-     logout(context);
-      }else{
-        setState(() {
-          _image = res['photo'];
-          _name = res['name'];
-          isLoading = false;
-        });
-      }
-     
-
-  }
-  @override
-  void initState() {
-    super.initState();
-   _profile();
-    //_logout();
-  }
+  bool isLoading = false;
+  
   @override
   Widget build(BuildContext context) {
     return 
@@ -65,10 +40,10 @@ class _MenuState extends State<Menu> {
                                   radius: 45,
                                   
                                   backgroundImage: Image.memory(
-                                  base64Decode(_image.toString()),
+                                  base64Decode(sp.getString('img').toString()),
                                    fit: BoxFit.cover,
                                    ).image,)),
-                                                                  Expanded(child: Text(_name.toString(),style:TextStyle(color: Colors.white,fontSize: 20))),
+                                                                  Expanded(child: Text(sp.getString('pname').toString(),style:TextStyle(color: Colors.white,fontSize: 20))),
                         
               ],
                         ),),
@@ -77,7 +52,10 @@ class _MenuState extends State<Menu> {
                         Padding(
                           padding: const EdgeInsets.only(left: 20,top: 8,bottom: 8),
                           child: InkWell(
-                            onTap: (){},
+                            onTap: (){
+                                                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard(title: null,pageIndex:0)));
+
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -92,7 +70,10 @@ class _MenuState extends State<Menu> {
                         Padding(
                           padding: const EdgeInsets.only(left: 20,top: 8,bottom: 8),
                           child: InkWell(
-                            onTap: (){},
+                            onTap: (){
+                                                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard(title: null,pageIndex:4)));
+
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -103,26 +84,15 @@ class _MenuState extends State<Menu> {
                             ),
                           ),
                         ),
+                        
                         Divider(color: Colors.white,height: 3,),
                         Padding(
                           padding: const EdgeInsets.only(left: 20,top: 8,bottom: 8),
                           child: InkWell(
-                            onTap: (){},
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(Icons.leaderboard,color: Colors.white,),
-                                SizedBox(width: 10,),
-                                Text('My leads',style:TextStyle(color: Colors.white,fontSize: 20)),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Divider(color: Colors.white,height: 3,),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20,top: 8,bottom: 8),
-                          child: InkWell(
-                            onTap: (){},
+                            onTap: (){
+                                                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard(title: null,pageIndex:2)));
+
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -137,7 +107,10 @@ class _MenuState extends State<Menu> {
                         Padding(
                           padding: const EdgeInsets.only(left: 20,top: 8,bottom: 8),
                           child: InkWell(
-                            onTap: (){},
+                            onTap: (){
+                                                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard(title: null,pageIndex:10)));
+
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -152,7 +125,10 @@ class _MenuState extends State<Menu> {
                         Padding(
                           padding: const EdgeInsets.only(left: 20,top: 8,bottom: 8),
                           child: InkWell(
-                            onTap: (){},
+                            onTap: (){
+                                                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard(title: null,pageIndex:11)));
+
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -167,7 +143,10 @@ class _MenuState extends State<Menu> {
                         Padding(
                           padding: const EdgeInsets.only(left: 20,top: 8,bottom: 8),
                           child: InkWell(
-                            onTap: (){},
+                            onTap: (){
+                                                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard(title: null,pageIndex:3)));
+
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -178,21 +157,7 @@ class _MenuState extends State<Menu> {
                             ),
                           ),
                         ),
-                        Divider(color: Colors.white,height: 3,),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20,top: 8,bottom: 8),
-                          child: InkWell(
-                            onTap: (){},
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(Icons.receipt,color: Colors.white,),
-                                SizedBox(width: 10,),
-                                Text('My Attendence',style:TextStyle(color: Colors.white,fontSize: 20)),
-                              ],
-                            ),
-                          ),
-                        ),
+                        
                         Divider(color: Colors.white,height: 3,),
                         Padding(
                           padding: const EdgeInsets.only(left: 20,top: 8,bottom: 8),

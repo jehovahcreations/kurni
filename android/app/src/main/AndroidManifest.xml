@@ -1,8 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.pura">
+    package="com.sjm.app.pura">
+   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
    <application
-        android:label="pura"
-        android:icon="@mipmap/ic_launcher">
+        android:label="PURA"
+        android:icon="@mipmap/launcher_icon"
+        android:requestLegacyExternalStorage="true"
+        android:allowBackup="false">
+        
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

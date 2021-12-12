@@ -24,13 +24,13 @@ class _ScreenState extends State<Screen> {
   }
   shared()async{
     sp = await SharedPreferences.getInstance();
-    var phone = sp.getString('phone');
+    var phone = sp.getString('name');
     
     Timer(
         Duration(seconds: 6),
-        () =>  phone ==null ? Navigator.of(context).pushReplacement(MaterialPageRoute(
+        () => phone== null?  Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context) => Login())):Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) => Dashboard())));
+            builder: (BuildContext context) => Dashboard(pageIndex: 0,))));
    // sp.setString('pageindex', '0');
   }
 
@@ -47,7 +47,12 @@ class _ScreenState extends State<Screen> {
               Shimmer.fromColors(
                  baseColor: Colors.white,
                  highlightColor: Colors.grey,
-                 child: Text('PURA',style: TextStyle(color: Colors.white, fontSize:130,fontWeight: FontWeight.w700),))
+                 child: Column(
+                   children: [
+                     Text('PURA',style: TextStyle(color: Colors.white, fontSize:130,fontWeight: FontWeight.w700),),
+                     Text('SOCIAL JUSTICE MOVEMENT',style: TextStyle(color: Colors.white, fontSize:25,fontWeight: FontWeight.w700),),
+                   ],
+                 ))
               ]),
         ),
       ),

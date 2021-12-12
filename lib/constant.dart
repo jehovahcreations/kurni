@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'login.dart';
 var serverip = "http://192.168.0.103:3000";
-var db = Db("mongodb://benet:123456@35.153.97.179/pura?authSource=pura");
+var db = Db("mongodb://pura:123456@15.207.216.233/pura?authSource=pura");
 ObjectId? clickid;
 const kTextColor = Color(0xFFFAFAFA);
 const deeporange = Colors.deepOrange;

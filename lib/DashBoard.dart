@@ -7,7 +7,7 @@ import 'login.dart';
 class Dashboard extends StatefulWidget {
   final pageIndex;
   final param;
-  Dashboard({Key? key, this.pageIndex, this.param}) : super(key: key);
+  Dashboard({Key? key, this.pageIndex, this.param, title}) : super(key: key);
 
   @override
   _DashboardState createState() => _DashboardState();

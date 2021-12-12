@@ -44,6 +44,8 @@ class _ParentState extends State<Parent> {
              _status = 'Wrong Referal, Try again !!';
            });
          }
+         await db.close();
+
        }
         
      //  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Proof()));

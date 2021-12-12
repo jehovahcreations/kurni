@@ -37,28 +37,7 @@ class _LoginState extends State<Login> {
   int? _code;
   
 
-  void _checknumber() async {
-    final perfs = await SharedPreferences.getInstance();
-    await db.open();
-    var coll = db.collection('users');
-    var res = await coll.findOne({"phone": _phoneNumberController.text});
 
-    if (res == null) {
-      print('success');
-      perfs.setString('phone', _phoneNumberController.text);
-      setState(() {
-        _usercheck = true;
-      });
-      _submitPhoneNumber();
-    } else {
-      setState(() {
-        _usercheck = false;
-        perfs.setString('name', res['name']);
-        perfs.setString('phone', _phoneNumberController.text);
-        _submitPhoneNumber();
-      });
-    }
-  }
 
   _register() async {
     final perfs = await SharedPreferences.getInstance();
@@ -67,25 +46,13 @@ class _LoginState extends State<Login> {
         .push(MaterialPageRoute(builder: (context) => LogBoard()));
   }
 
-  logche()async{
-     final perfs = await SharedPreferences.getInstance();
-    var vv = perfs.getString('phone');
-    print('nn ${vv}');
-    if(vv ==null){
-      
-    }else{
-      await db.open();
-      
- Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => Dashboard(pageIndex: 0,)));
-    }
-  }
+ 
 
   @override
   void initState(){
     super.initState();
    
-   logche();
+  // logche();
    
     //_logout();
   }
@@ -103,14 +70,7 @@ class _LoginState extends State<Login> {
       _status =
           (_firebaseUser == null) ? 'Not Logged In\n' : 'Already LoggedIn\n';
     });
-    final perfs = await SharedPreferences.getInstance();
-    final phone = perfs.getString('phone');
-    if(phone == null){
-      _logout();
-    }else{
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => Dashboard(pageIndex: 0,)));
-    }
+  
   }
 
   /// phoneAuthentication works this way:
@@ -137,19 +97,21 @@ class _LoginState extends State<Login> {
         _firebaseUser = authRes.user;
       //  final FirebaseUser user = await authRes.currentUser();
         final uid = _firebaseUser!.uid;
-        print(uid);
-        prefs.setString('password', uid);
-        if (_usercheck == true) {
-          _register();
-          setState(() {
-            _status = 'Signed In\n';
-          });
-        } else {
-          
+    await db.open();
+    var coll = db.collection('users');
+    var res = await coll.findOne({"phone": _phoneNumberController.text});
 
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => Dashboard(pageIndex: 0,)));
-        }
+    if (res == null) {
+      _register();
+    } else {
+      setState(() {
+        _usercheck = false;
+        prefs.setString('name', res['name']);
+        prefs.setString('phone', _phoneNumberController.text);
+       Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard(pageIndex: 0,)));
+      });
+    }
+    
       }).catchError((e) => _handleError(e));
     } catch (e) {
       setState(() {
@@ -188,6 +150,7 @@ class _LoginState extends State<Login> {
       print('verificationCompleted');
       setState(() {
         _status = 'verificationCompleted\n';
+        _login();
       });
       this._phoneAuthCredential = phoneAuthCredential;
       print(phoneAuthCredential);
@@ -369,7 +332,7 @@ class _LoginState extends State<Login> {
                                 onTap: wait
                                     ? null
                                     : () async {
-                                        _checknumber();
+                                        _submitPhoneNumber();
                                         //print('object');
                                         startTimer();
                                         setState(() {
